@@ -1,0 +1,72 @@
+syntax = "proto3";
+package stores;
+option go_package = "/gen_proto";
+import "google/protobuf/empty.proto";
+
+service Wireguard {
+  rpc Connect (ConnectResponse) returns (google.protobuf.Empty);
+  rpc AddConfig (ConfigName) returns (AddConfigResponse);
+  rpc GetConfigID (ConfigAddress) returns (ConfigIdResponse);
+  rpc GetConfig (ConfigID) returns (ConfigText);
+  rpc GetAllConfigs (google.protobuf.Empty) returns (GetAllConfigsResponse);
+  rpc GetConfigsAmount (google.protobuf.Empty) returns (ConfigAmount);
+  rpc DisableConfig (ConfigID) returns (google.protobuf.Empty);
+  rpc EnableConfig (ConfigID) returns (google.protobuf.Empty);
+  rpc DeleteConfig (ConfigID) returns (google.protobuf.Empty);
+  rpc GetQR (ConfigID) returns (QRCode);
+}
+message ConnectResponse {
+  string IP = 1;
+  string Password =2;
+}
+
+message ConfigName {
+  string conf_name = 1;
+}
+
+message AddConfigResponse {
+  ConfigID config_id = 1;
+  ConfigAddress config_address = 2;
+}
+
+message ConfigIdResponse {
+  ConfigID config_id = 1;
+}
+
+message GetConfigResponse {
+  string id = 1;
+  string name = 2;
+  bool enabled = 3;
+  string address = 4;
+  string publicKey = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  string persistentKeepalive = 8;
+  string latestHandshakeAt = 9;
+  int64 transferRx = 10;
+  int64 transferTx = 11;
+}
+
+message GetAllConfigsResponse {
+  repeated GetConfigResponse conf_list = 1;
+}
+
+message ConfigID {
+  string conf_id = 1;
+}
+message ConfigAddress {
+  string conf_address = 1;
+}
+message ConfigAmount {
+  int32 amount = 1;
+}
+
+message QRCode {
+  bytes qr_code = 1;
+}
+
+message ConfigText {
+  string text = 1;
+}
+
+//protoc --go_out=./internal/proto --go-grpc_out=./internal/proto internal/proto/wireguard.proto
